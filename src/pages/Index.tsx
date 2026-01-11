@@ -42,9 +42,11 @@ const cosmeticItems = [
 
 export default function Index() {
   const [activeSection, setActiveSection] = useState('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (section: string) => {
     setActiveSection(section);
+    setMobileMenuOpen(false);
     const element = document.getElementById(section);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -76,11 +78,50 @@ export default function Index() {
             ))}
           </div>
 
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
-            <Icon name="UserPlus" className="mr-2" size={18} />
-            Войти
-          </Button>
+          <div className="hidden md:flex">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+              <Icon name="UserPlus" className="mr-2" size={18} />
+              Войти
+            </Button>
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 hover:bg-accent rounded-lg transition-colors"
+            aria-label="Меню"
+          >
+            <Icon name={mobileMenuOpen ? "X" : "Menu"} size={24} />
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-card border-t border-border animate-fade-in">
+            <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
+              {['home', 'about', 'rules', 'shop', 'contact'].map((section) => (
+                <button
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className={`text-left py-3 px-4 rounded-lg font-medium transition-colors ${
+                    activeSection === section
+                      ? 'bg-primary text-primary-foreground'
+                      : 'hover:bg-accent text-muted-foreground'
+                  }`}
+                >
+                  {section === 'home' && 'Главная'}
+                  {section === 'about' && 'О сервере'}
+                  {section === 'rules' && 'Правила'}
+                  {section === 'shop' && 'Магазин'}
+                  {section === 'contact' && 'Контакты'}
+                </button>
+              ))}
+              <Separator className="my-2" />
+              <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+                <Icon name="UserPlus" className="mr-2" size={18} />
+                Войти
+              </Button>
+            </div>
+          </div>
+        )}
       </nav>
 
       <section id="home" className="pt-32 pb-20 px-4">
